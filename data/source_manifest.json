@@ -1,0 +1,88 @@
+{
+  "project": "Consular Services RAG Copilot",
+  "scope": "Kazakhstan consular services in China",
+  "last_accessed": "2026-05-08",
+  "disclaimer": "Demo corpus is structured from official-source facts for portfolio evaluation. In production, source extraction should be automated and periodically refreshed.",
+  "sources": [
+    {
+      "source_id": "gov_kz_beijing_embassy",
+      "title": "Embassy of Kazakhstan in China",
+      "url": "https://www.gov.kz/memleket/entities/mfa-beijing",
+      "source_type": "gov.kz",
+      "jurisdiction": "Kazakhstan Embassy in China",
+      "service_category": "overview",
+      "language": "ru",
+      "official_source": true
+    },
+    {
+      "source_id": "gov_kz_beijing_citizen_services",
+      "title": "Consular services for Kazakhstan citizens in China",
+      "url": "https://www.gov.kz/memleket/entities/mfa-beijing/press/article/details/59183",
+      "source_type": "gov.kz",
+      "jurisdiction": "Kazakhstan Embassy in China",
+      "service_category": "citizen_services",
+      "language": "ru",
+      "official_source": true
+    },
+    {
+      "source_id": "gov_kz_beijing_foreign_visa_services",
+      "title": "Consular services for foreign citizens",
+      "url": "https://www.gov.kz/memleket/entities/mfa-beijing/press/article/details/115161",
+      "source_type": "gov.kz",
+      "jurisdiction": "Kazakhstan Embassy in China",
+      "service_category": "visa",
+      "language": "ru",
+      "official_source": true
+    },
+    {
+      "source_id": "adilet_consular_charter",
+      "title": "Consular Charter of the Republic of Kazakhstan",
+      "url": "https://adilet.zan.kz/rus/docs/U1600000240",
+      "source_type": "adilet.zan.kz",
+      "jurisdiction": "Republic of Kazakhstan",
+      "service_category": "legal_basis",
+      "language": "ru",
+      "official_source": true
+    },
+    {
+      "source_id": "adilet_passport_abroad",
+      "title": "Rules for passport service for citizens of Kazakhstan abroad",
+      "url": "https://adilet.zan.kz/rus/docs/V2000020627",
+      "source_type": "adilet.zan.kz",
+      "jurisdiction": "Republic of Kazakhstan",
+      "service_category": "passport",
+      "language": "ru",
+      "official_source": true
+    },
+    {
+      "source_id": "adilet_consular_registration",
+      "title": "Rules for registration of Kazakhstan citizens abroad",
+      "url": "https://adilet.zan.kz/rus/docs/V2000020767",
+      "source_type": "adilet.zan.kz",
+      "jurisdiction": "Republic of Kazakhstan",
+      "service_category": "consular_registration",
+      "language": "ru",
+      "official_source": true
+    },
+    {
+      "source_id": "adilet_return_certificate",
+      "title": "Rules for certificate of return",
+      "url": "https://adilet.zan.kz/rus/docs/V2000020642",
+      "source_type": "adilet.zan.kz",
+      "jurisdiction": "Republic of Kazakhstan",
+      "service_category": "return_certificate",
+      "language": "ru",
+      "official_source": true
+    },
+    {
+      "source_id": "adilet_legalization_rules",
+      "title": "Rules for legalization of documents",
+      "url": "https://adilet.zan.kz/rus/docs/V1700016116",
+      "source_type": "adilet.zan.kz",
+      "jurisdiction": "Republic of Kazakhstan",
+      "service_category": "legalization",
+      "language": "ru",
+      "official_source": true
+    }
+  ]
+}

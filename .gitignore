@@ -1,0 +1,52 @@
+# Local configuration and generated files
+.env
+*.log
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+env/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local corpora, evaluation data, model artifacts and generated stores
+data/raw/
+data/intent_training/
+data/processed/
+data/qdrant_local/
+qdrant_storage/
+models/
+*.joblib
+app/evaluation/
+chat_payload*.json
+ollama_*_payload.json
+ollama_*_response*.json
+ollama_processor_test_payload.json
+
+# Keep local-only test and working documents out of accidental additions
+tests/
+docs/product_spec.md
+docs/next_steps.md
+docs/evaluation_results/
+
+# Local diagnostics and backups
+scripts/benchmark_*.py
+scripts/evaluate_*.py
+scripts/run_eval.py
+scripts/smoke_test_*.py
+scripts/train_intent_classifier.py
+scripts/patch_*.py
+scripts/fix_*.py
+scripts/append_*.py
+scripts/_tmp_*.py
+app/**/*.bak_*
+*.bak_*
+docker-compose.yml.bak_*

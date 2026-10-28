@@ -1,0 +1,149 @@
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: rag_qdrant
+    ports:
+      - "127.0.0.1:6333:6333"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+
+  redis:
+    image: redis:7-alpine
+    container_name: rag_redis
+    ports:
+      - "127.0.0.1:6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_storage:/data
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: rag_postgres
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_USER: rag_user
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}"
+      POSTGRES_DB: rag_metadata
+    volumes:
+      - postgres_storage:/var/lib/postgresql/data
+
+  api:
+    build: .
+    image: rag-copilot-app:local
+    container_name: rag_api
+    depends_on:
+      - qdrant
+      - redis
+      - postgres
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      APP_NAME: Consular Services RAG Copilot
+      QUERY_LOG_ENABLED: "${QUERY_LOG_ENABLED:-false}"
+      QDRANT_MODE: server
+      QDRANT_HOST: qdrant
+      QDRANT_PORT: 6333
+      QDRANT_COLLECTION: rag_documents
+      EMBEDDING_PROVIDER: local
+      EMBEDDING_MODEL: hashing
+      EMBEDDING_DIM: 384
+      RERANKER_PROVIDER: none
+      CACHE_PROVIDER: redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_DB: 0
+      REDIS_TTL_SECONDS: 3600
+      METADATA_DB_PROVIDER: postgres
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: rag_metadata
+      POSTGRES_USER: rag_user
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}"
+      POSTGRES_CONNECT_TIMEOUT_SECONDS: 3
+      LLM_PROVIDER: ollama
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      OLLAMA_MODEL: qwen2.5:1.5b
+      OLLAMA_TIMEOUT_SECONDS: 120
+    command: >
+      python -m uvicorn app.api.main:app
+      --host 0.0.0.0
+      --port 8000
+
+  frontend:
+    image: rag-copilot-app:local
+    container_name: rag_frontend
+    depends_on:
+      - api
+    ports:
+      - "127.0.0.1:8501:8501"
+    environment:
+      API_URL: http://api:8000
+      STREAMLIT_BROWSER_GATHER_USAGE_STATS: "false"
+    command: >
+      streamlit run frontend/streamlit_app.py
+      --server.address 0.0.0.0
+      --server.port 8501
+
+  monitoring:
+    image: rag-copilot-app:local
+    container_name: rag_monitoring
+    depends_on:
+      - postgres
+    ports:
+      - "127.0.0.1:8502:8502"
+    environment:
+      METADATA_DB_PROVIDER: postgres
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: rag_metadata
+      POSTGRES_USER: rag_user
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}"
+      POSTGRES_CONNECT_TIMEOUT_SECONDS: 3
+      STREAMLIT_BROWSER_GATHER_USAGE_STATS: "false"
+    command: >
+      streamlit run frontend/monitoring_dashboard.py
+      --server.address 0.0.0.0
+      --server.port 8502
+
+  indexer:
+    profiles: ["ingest"]
+    image: rag-copilot-app:local
+    container_name: rag_indexer
+    depends_on:
+      - qdrant
+      - redis
+      - postgres
+    volumes:
+      - ./data:/app/data
+    environment:
+      QDRANT_MODE: server
+      QDRANT_HOST: qdrant
+      QDRANT_PORT: 6333
+      QDRANT_COLLECTION: rag_documents
+      EMBEDDING_PROVIDER: local
+      EMBEDDING_MODEL: hashing
+      EMBEDDING_DIM: 384
+      RERANKER_PROVIDER: none
+      CACHE_PROVIDER: redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_DB: 0
+      REDIS_TTL_SECONDS: 3600
+      METADATA_DB_PROVIDER: postgres
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: rag_metadata
+      POSTGRES_USER: rag_user
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}"
+      POSTGRES_CONNECT_TIMEOUT_SECONDS: 3
+    command: >
+      sh -c "python scripts/wait_for_services.py
+      && python scripts/ingest_documents.py
+      && python scripts/index_chunks.py
+      && python scripts/init_metadata_db.py"
+
+volumes:
+  qdrant_storage:
+  redis_storage:
+  postgres_storage:

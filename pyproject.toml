@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=69.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "consular-services-rag-copilot"
+version = "0.1.0"
+description = "A document-grounded RAG assistant with citations for consular-service information."
+requires-python = ">=3.11"
+dependencies = [
+    "psycopg[binary]>=3.2.0",
+    "redis>=5.0.0",
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "pydantic>=2.8.0",
+    "pydantic-settings>=2.4.0",
+    "python-dotenv>=1.0.1",
+    "qdrant-client>=1.11.0",
+    "openai>=1.40.0",
+    "numpy>=1.26.0",
+    "pandas>=2.2.0",
+    "requests>=2.32.0",
+    "tqdm>=4.66.0",
+    "streamlit>=1.37.0",
+]
+
+[project.optional-dependencies]
+ml = [
+    "sentence-transformers>=3.0.0",
+    "scikit-learn>=1.4.0",
+    "joblib>=1.3.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
